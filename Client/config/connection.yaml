@@ -1,0 +1,6 @@
+connection:
+  # The host of the server
+  host: localhost
+  port: 6644
+  commands:
+    - 1 : login  

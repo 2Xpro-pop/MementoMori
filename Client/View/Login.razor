@@ -1,0 +1,63 @@
+﻿@inherits LayoutComponentBase
+
+@inject IOptionsMonitor<Theme> ThemeOptions
+@inject LoginService LoginService
+
+<HeadContent>
+    <style>
+        body {
+            background-color: @theme.Primary;
+            color: @theme.TextPrimaryColor;
+        }
+
+        .accent {
+            color: @theme.TextAccentColor
+        }
+    </style>
+</HeadContent>
+
+
+<div class="centered">
+    <div class="overflow login-ovf"></div>
+    <h1>Вход</h1>
+
+    <EditForm Model=@loginModel class="text-center" OnValidSubmit=@LoginSubmit style="width: 260px">
+
+        <DataAnnotationsValidator />
+
+        <InputText @bind-Value=loginModel.Login placeholder="Логин" class="form-control" />
+        <p class="text-danger"><ValidationMessage For=@(() =>loginModel.Login) /></p>
+
+        <InputText @bind-Value=loginModel.Password placeholder="Пароль" class="form-control" type="password" />
+        <p class="text-danger"><ValidationMessage For=@(() =>loginModel.Password) /></p>
+
+        <button type="submit" class="cool-btn" style="color: @theme.TextPrimaryColor">Войти</button>
+    </EditForm>
+</div>
+
+
+@code {
+    private LoginModel loginModel = new();
+    private Theme theme = new();
+
+    protected override void OnInitialized()
+    {
+        theme = ThemeOptions.CurrentValue;
+    }
+
+    private async Task LoginSubmit()
+    {
+        LoginService.Login(loginModel.Login, loginModel.Password);
+    }
+
+    class LoginModel
+    {
+        [Required(ErrorMessage = "Поле не может быть пустым")]
+        [StringLength(20, ErrorMessage = "Логин должен быть от 3 до 20 символов", MinimumLength = 3)]
+        public string Login { get; set; }
+
+        [Required(ErrorMessage = "Поле не может быть пустым")]
+        [StringLength(20, ErrorMessage = "Пароль должен быть от 3 до 20 символов", MinimumLength = 3)]
+        public string Password { get; set; }
+    }
+}

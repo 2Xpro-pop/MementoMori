@@ -1,0 +1,26 @@
+* { box-sizing: border-box; }
+
+html,body {
+    background-color: #1B1E1F !important;
+}
+
+.fp-is-overflow .fp-overflow.fp-auto-height, .fp-is-overflow .fp-overflow.fp-auto-height-responsive, .fp-is-overflow>.fp-overflow {
+    overflow-x: clip !important;
+}
+
+.overflow {
+    pointer-events: none;
+    width: 60%;
+    height: 100%;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: contain;
+    z-index: calc(1000-7);
+}
+
+.columns {
+    background-image: url('columns.png');
+}

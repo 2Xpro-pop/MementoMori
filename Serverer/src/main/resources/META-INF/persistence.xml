@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+    <persistence-unit name="bayasik">
+        <class>org.bayasik.erik.models.BranchOffice</class>
+        <class>org.bayasik.erik.models.BudgetHistory</class>
+        <class>org.bayasik.erik.models.Inventory</class>
+        <class>org.bayasik.erik.models.Patient</class>
+        <class>org.bayasik.erik.models.Personal</class>
+        <class>org.bayasik.erik.models.Receptionist</class>
+        <class>org.bayasik.erik.models.Schedule</class>
+
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://192.168.171.134:5432/jpa"/>
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="example"/>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+</persistence>

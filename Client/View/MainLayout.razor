@@ -1,0 +1,34 @@
+﻿@inherits LayoutComponentBase
+
+@inject IOptionsMonitor<Theme> ThemeOptions
+
+<HeadContent>
+    <style>
+        body {
+            background-color: @theme.Primary;
+            color: @theme.TextPrimaryColor;
+        }
+
+        .accent {
+            color: @theme.TextAccentColor
+        }
+    </style>
+</HeadContent>
+
+<NavMenu />
+
+<div class="navbar-space"> </div>
+
+<div class="p-4">
+    @Body
+</div>
+
+
+@code {
+    private Theme theme = new();
+
+    protected override void OnInitialized()
+    {
+        theme = ThemeOptions.CurrentValue;
+    }
+}

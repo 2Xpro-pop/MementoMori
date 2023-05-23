@@ -1,0 +1,52 @@
+@page "/"
+@page "/index"
+@using Client.Models;
+@using Client.Services.HostedService;
+
+@inject IOptionsMonitor<Theme> ThemeOptions
+@inject BudgetHistoryService BudgetHistoryService;
+@inject ConnectionContext ConnectionContext;
+@inject Receptionist Receptionist
+
+<div class="overflow columns"></div>
+
+<h1>Главное</h1>
+
+<h2>Ваше состояние: @summ</h2>
+
+<h2>История бюджета:</h2>
+<div class="p-3" style="width: 30%;">
+    <MudTable Items=@BudgetHistoryService.Models>
+        <HeaderContent>
+            <MudTh>Действие</MudTh>
+            <MudTh>Сумма</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Description</MudTd>
+            <MudTd>@context.Action.ToString("+0.00;-0.00")</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager HideRowsPerPage=true HorizontalAlignment="HorizontalAlignment.Left" />
+        </PagerContent>
+    </MudTable>
+</div>
+
+
+@code {
+    private Theme theme = new();
+    private string summ = "0";
+
+    protected override async Task OnInitializedAsync()
+    {
+        theme = ThemeOptions.CurrentValue;
+        BudgetHistoryService.OnModelsChanged += () =>
+        {
+            var sum = BudgetHistoryService.Models.Sum(m => m.Action);
+            summ = sum.ToString("+0.00;-0.00");
+            this.StateHasChanged();
+        };
+        BudgetHistoryService.ListenBranchOffice(Receptionist.BranchOfficeId);
+
+        //await ConnectionContext.ImmitedBudgetHistory();
+    }
+}

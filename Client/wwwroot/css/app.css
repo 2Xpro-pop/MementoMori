@@ -1,0 +1,84 @@
+.overflow {
+    pointer-events: none;
+    width: 60%;
+    height: calc(100% - 58px);
+    bottom: 0;
+    right: 0;
+    position: fixed;
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: contain;
+    z-index: calc(1000-7);
+}
+
+.columns {
+    background-image: url('../images/columns.png');
+}
+
+.column {
+    background-image: url('../images/column.png');
+}
+
+.sad-angel {
+    background-image: url('../images/sad_angel.png');
+}
+
+.death-angel {
+    background-image: url('../images/death_angel.png');
+}
+
+.login-ovf {
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    background-image: url('../images/login.png');
+    background-position: 50%;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 46px;
+    background-image: url("../images/mramor.jpg");
+    background-size: cover;
+    z-index: 100;
+}
+
+
+    nav > ul {
+        background-color: rgba(0, 0, 0, 0.5);
+        height: 46px;
+        display: flex;
+        flex-direction: row;
+        list-style-type: none;
+    }
+
+.navbar-space {
+    height: 64px;
+    width: 100%;
+}
+
+
+.cool-btn {
+    border: none;
+    background: none;
+    background-image: url('../images/button.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 200px;
+    height: 44px;
+}
+
+
+.centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    justify-items:center;
+    justify-self: center;
+    width: 100%;
+    height: 100vh;
+}
