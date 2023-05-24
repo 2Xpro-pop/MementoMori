@@ -12,7 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class ScheduleCH implements CommandHandler {
-    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    public static SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
     private ConnectionContext context;
     private Responser responser;
 
@@ -38,6 +38,7 @@ public class ScheduleCH implements CommandHandler {
         System.out.println("AddScheduleSucc");
         em.persist(schedule);
         em.getTransaction().commit();
+        em.flush();
 
         responser.notifyResponse(Commands.ADD_SCHEDULE, new ScheduleVM(schedule));
     }
@@ -50,7 +51,7 @@ public class ScheduleCH implements CommandHandler {
         em.remove(schedule);
         em.getTransaction().commit();
 
-        responser.notifyResponse(Commands.DELETE_SCHEDULE, schedule);
+        responser.notifyResponse(Commands.DELETE_SCHEDULE, new ScheduleVM(schedule));
     }
 
     @Command(Commands.UPDATE_SCHEDULE)
@@ -68,7 +69,7 @@ public class ScheduleCH implements CommandHandler {
         schedule.setPrice(price);
         em.merge(schedule);
         em.getTransaction().commit();
-
+        em.close();
         responser.notifyResponse(Commands.UPDATE_SCHEDULE, schedule);
     }
 
@@ -76,8 +77,10 @@ public class ScheduleCH implements CommandHandler {
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
         var schedules = em.createQuery("SELECT o FROM Schedule o", Schedule.class).getResultList();
+
         System.out.println(schedules);
         responser.notifyResponse(Commands.GET_ALL_SCHEDULE, ScheduleVM.fromCollection(schedules));
+        em.close();
     }
 
     @Command(Commands.GET_SCHEDULE_BY_ID)
@@ -86,7 +89,9 @@ public class ScheduleCH implements CommandHandler {
         var schedules = em.createQuery("SELECT o FROM Schedule o WHERE o.id = :scheduleId", Schedule.class).setParameter("scheduleId", id).getResultList();
         System.out.println("GetScheduleByIdSucc");
         System.out.println(schedules);
+
         responser.jsonResponse(Commands.GET_SCHEDULE_BY_ID, ScheduleVM.fromCollection(schedules));
+        em.close();
     }
 
     @Command(Commands.GET_SCHEDULE_BY_BRANCH_OFFICE)
@@ -99,6 +104,8 @@ public class ScheduleCH implements CommandHandler {
         var schedules = em.createQuery("SELECT o FROM Schedule o WHERE o.branchOfficeId = :branchOfficeId", Schedule.class).setParameter("branchOfficeId", branchOffice).getResultList();
         System.out.println("GetScheduleByIdSucc");
         System.out.println(schedules);
+
         responser.jsonResponse(Commands.GET_SCHEDULE_BY_BRANCH_OFFICE, ScheduleVM.fromCollection(schedules));
+        em.close();
     }
 }

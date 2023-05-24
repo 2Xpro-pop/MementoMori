@@ -22,6 +22,8 @@ internal class BinaryCommandInvoker : ICommandInvoker
         bytes.AddRange(BinaryMessageEncoder.Short(commandId));
         bytes.AddRange(BinaryMessageEncoder.EncodeParameters(args));
         bytes.InsertRange(0, BinaryMessageEncoder.Int(bytes.Count));
-        _connectionContext.TcpClient.GetStream().Write(bytes.ToArray());
+        var ns = _connectionContext.TcpClient.GetStream();
+        ns.Write(bytes.ToArray());
+        ns.Flush();
     }
 }

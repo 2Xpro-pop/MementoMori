@@ -1,0 +1,65 @@
+﻿@page "/schedule"
+@using BlazorCalendar.Models;
+
+@inject IOptionsMonitor<Theme> ThemeOptions
+@inject ScheduleService ScheduleService;
+@inject ConnectionContext ConnectionContext;
+@inject Receptionist Receptionist
+@inject ICommandInvoker CommandInvoker
+
+<div class="overflow column"></div>
+
+<h1>График работ</h1>
+
+<div class="p-3" style="width: 60%;">
+   
+    <RadzenScheduler Data=@schedules 
+                     StartProperty="Date"
+                     EndProperty="EndDate"
+                     TextProperty="Caption"
+                     Style="background-color: #373740"
+                     TodayText="Сегодня"
+                     @ref="scheduler"
+                     TItem="Schedule"
+                     AppointmentSelect=@OnSlotSelect>
+        <RadzenDayView StartTime="TimeSpan.FromHours(6)" 
+                       EndTime="TimeSpan.FromHours(21)" 
+                       Text="День" 
+                       TimeFormat="HH:mm" />
+        <RadzenMonthView Text="Месяц" />
+    </RadzenScheduler>
+
+</div>
+
+@code {
+    private RadzenScheduler<Schedule> scheduler;
+    private Theme theme = new();
+    private List<Schedule> schedules;
+
+    protected override async Task OnInitializedAsync()
+    {
+        theme = ThemeOptions.CurrentValue;
+        ScheduleService.OnModelsChanged += async () =>
+        {
+            await this.InvokeAsync(() =>
+            {
+                schedules = ScheduleService.Models;
+                scheduler.Reload();
+                scheduler.Data = schedules;
+                this.StateHasChanged();
+            });
+        };
+        ScheduleService.ListenBranchOffice(1);
+        CommandInvoker.InvokeCommand(53);
+    }
+
+    private void OnSlotSelect(SchedulerAppointmentSelectEventArgs<Schedule> args)
+    {
+        this.InvokeAsync(() =>
+        {
+            var data = args.Data;
+            MainWindow.ShowPopup<Schedule,SchedulePopup>(data);
+        });
+    }
+
+}

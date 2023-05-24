@@ -16,6 +16,7 @@
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="connection.pool_size" value="1000"/>
         </properties>
     </persistence-unit>
 </persistence>

@@ -49,6 +49,5 @@ public class Responser {
         System.arraycopy(bytes, 0, response, 6, bytes.length);
         output.write(response);
         output.flush();
-        output.close();
     }
 }

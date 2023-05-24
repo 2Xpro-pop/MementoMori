@@ -19,7 +19,7 @@ public class BudgetHistory {
     @Column(name = "BudgetDescription")
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BranchOfficeId")
     private BranchOffice branchOfficeId;
 }

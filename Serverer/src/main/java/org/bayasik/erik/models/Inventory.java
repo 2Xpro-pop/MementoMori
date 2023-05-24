@@ -19,7 +19,7 @@ public class Inventory {
     @Column(name = "InventoryAmount")
     private int amount;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BranchOfficeId")
     private BranchOffice branchOfficeId;
 }

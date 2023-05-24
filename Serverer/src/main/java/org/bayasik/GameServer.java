@@ -4,6 +4,7 @@ import com.google.inject.Injector;
 import org.bayasik.connection.CloseConnectionLocker;
 import org.bayasik.connection.ConnectionContext;
 
+import java.io.Console;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,8 +24,10 @@ public class GameServer {
     public void start(){
         try {
             var socketServer = new ServerSocket(port);
+            socketServer.setSoTimeout(0);
             while (true) {
                 var socket = socketServer.accept();
+                socket.setKeepAlive(true);
                 var connectionContext = ConnectionContext.fromSocket(socket);
 
                 connectionContext.put(Injector.class, injector);
@@ -49,14 +52,16 @@ public class GameServer {
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             var socket = connectionContext.get(Socket.class);
             var connectionCloseLocker = connectionContext.get(CloseConnectionLocker.class);
 
             gameServer.sessionMiddlewaresHandler.handleOpenConnection(connectionContext);
 
-            while (socket.isConnected() && !socket.isClosed()){
+            while (!socket.isClosed()){
             }
+
+            System.out.println("Connection closed");
 
             ConnectionContext.contexts.remove(connectionContext);
 

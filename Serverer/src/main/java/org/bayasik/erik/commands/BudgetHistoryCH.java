@@ -33,7 +33,7 @@ public class BudgetHistoryCH implements CommandHandler {
         em.persist(budgetHistory);
         em.getTransaction().commit();
 
-        responser.notifyResponse(Commands.ADD_BUDGET_HISTORY, budgetHistory);
+        responser.notifyResponse(Commands.ADD_BUDGET_HISTORY, new BudgetHistoryVM(budgetHistory));
     }
 
     @Command(Commands.DELETE_BUDGET_HISTORY)
@@ -43,8 +43,9 @@ public class BudgetHistoryCH implements CommandHandler {
         var budgetHistory = em.find(BudgetHistory.class, id);
         em.remove(budgetHistory);
         em.getTransaction().commit();
+        em.flush();
 
-        responser.notifyResponse(Commands.DELETE_BUDGET_HISTORY, budgetHistory);
+        responser.notifyResponse(Commands.DELETE_BUDGET_HISTORY, new BudgetHistoryVM(budgetHistory));
     }
 
     @Command(Commands.UPDATE_BUDGET_HISTORY)
@@ -58,8 +59,9 @@ public class BudgetHistoryCH implements CommandHandler {
         budgetHistory.setBranchOfficeId(office);
         em.merge(budgetHistory);
         em.getTransaction().commit();
+        em.close();
 
-        responser.notifyResponse(Commands.UPDATE_BUDGET_HISTORY, budgetHistory);
+        responser.notifyResponse(Commands.UPDATE_BUDGET_HISTORY, new BudgetHistoryVM(budgetHistory));
     }
 
     @Command(Commands.GET_ALL_BUDGET_HISTORY)
@@ -68,6 +70,7 @@ public class BudgetHistoryCH implements CommandHandler {
         var budgetHistories = em.createQuery("SELECT o FROM BudgetHistory o", BudgetHistory.class).getResultList();
         System.out.println("GetAllHistorySucc");
         System.out.println(budgetHistories);
+        em.close();
         responser.jsonResponse(Commands.GET_ALL_BUDGET_HISTORY, BudgetHistoryVM.fromCollection(budgetHistories));
     }
 
@@ -77,7 +80,8 @@ public class BudgetHistoryCH implements CommandHandler {
         var budgetHistories = em.createQuery("SELECT o FROM BudgetHistory o WHERE o.id = :budgetHistoryId", BudgetHistory.class).setParameter("budgetHistoryId", id).getResultList();
         System.out.println("GetBudgetByIdSucc");
         System.out.println(budgetHistories);
-        responser.jsonResponse(Commands.GET_BUDGET_HISTORY_BY_ID, budgetHistories);
+        em.close();
+        responser.jsonResponse(Commands.GET_BUDGET_HISTORY_BY_ID, BudgetHistoryVM.fromCollection(budgetHistories));
     }
 
     @Command(Commands.GET_BUDGET_HISTORY_BY_BRANCH_OFFICE)

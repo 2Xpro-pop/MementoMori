@@ -1,0 +1,53 @@
+@page "/personal"
+
+@inject IOptionsMonitor<Theme> ThemeOptions
+@inject PersonalService PersonalService;
+@inject ConnectionContext ConnectionContext;
+@inject Receptionist Receptionist
+@inject ICommandInvoker CommandInvoker
+
+<div class="overflow sad-angel"></div>
+
+<h1>Персонал</h1>
+
+<div class="p-3" style="width: 70%;">
+    <MudTable Items=@personals>
+        <HeaderContent>
+            <MudTh>ФИО</MudTh>
+            <MudTh>Адресс</MudTh>
+            <MudTh>Должность</MudTh>
+            <MudTh>Зарплата</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.FullName</MudTd>
+            <MudTd>@context.Address</MudTd>
+            <MudTd>@context.Post</MudTd>
+            <MudTd>@context.SalaryAmount.ToString("0.00")</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager HideRowsPerPage=true HorizontalAlignment="HorizontalAlignment.Left" />
+        </PagerContent>
+    </MudTable>
+</div>
+
+
+@code {
+    private List<Personal> personals;
+    private Theme theme = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        theme = ThemeOptions.CurrentValue;
+        PersonalService.OnModelsChanged += async () =>
+        {
+            await this.InvokeAsync(() =>
+            {
+                personals = PersonalService.Models;
+                this.StateHasChanged();
+            });
+
+        };
+        PersonalService.ListenBranchOffice(1);
+        CommandInvoker.InvokeCommand(43);
+    }
+}

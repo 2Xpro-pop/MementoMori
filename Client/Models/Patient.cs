@@ -5,17 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Client.Models;
-public class BudgetHistory: IHaveBranchOfficeId
+public class Patient : IHaveBranchOfficeId
 {
     public int Id
     {
         get; set;
     }
-    public string Description
+    public string Name
     {
         get; set;
     }
-    public double Action
+    public string Surname
+    {
+        get; set;
+    }
+    public string FullName => $"{Name} {Surname}";
+    public string Address
+    {
+        get; set;
+    }
+    public string Email
+    {
+        get; set;
+    }
+    public string PhoneNumber
     {
         get; set;
     }

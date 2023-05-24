@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Client.Services;
 using Microsoft.AspNetCore.Components.WebView.Wpf;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,11 +23,24 @@ namespace Client;
 /// </summary>
 public partial class MainWindow : Window
 {
-
+    public static MainWindow Instance
+    {
+        get;
+        private set;
+    }
     public MainWindow()
     {
         InitializeComponent();
+        Instance = this;
     }
 
+
+    public static void ShowPopup<T,U>(T data) where U : Window, IPopup<T>, new()
+    {
+        var window = new U();
+        window.Send(data);
+        window.Owner = Instance;
+        window.ShowDialog();
+    }
 
 }

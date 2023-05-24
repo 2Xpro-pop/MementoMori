@@ -11,7 +11,7 @@ public class Inventory : IHaveBranchOfficeId
     {
         get; set;
     }
-    public int BrancheOfficeId
+    public int BranchOfficeId
     {
         get; set;
     }

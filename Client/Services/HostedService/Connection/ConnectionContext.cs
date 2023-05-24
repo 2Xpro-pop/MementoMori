@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -35,14 +36,26 @@ public class ConnectionContext
 
     public async void Connect()
     {
-        _socket = new TcpClient(_connectionOptions.Host, _connectionOptions.Port);
-        
+        try
+        {
+            _socket?.Dispose();
+        }
+        catch { }
+        finally
+        {
+            _socket = new TcpClient(_connectionOptions.Host, _connectionOptions.Port);
+        }
+        var ns = _socket.GetStream();
         while (_socket.Connected)
         {
             await Task.Delay(100);
             try
             {
-                var ns = _socket.GetStream();
+                
+                if (!ns.DataAvailable)
+                {
+                    continue;
+                }
 
                 var commandToken = ns.ReadCommand();
 
@@ -51,10 +64,12 @@ public class ConnectionContext
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                if(e is SocketException || e is IOException)
+                {
+                    break;
+                }
             }
         }
-
-        Task.Run(() => Connect());
     }
 
     public TcpClient TcpClient => _socket ?? throw new InvalidOperationException("Connection is not established");
@@ -91,7 +106,7 @@ public class ConnectionContext
     private BudgetHistory GenerateRandomBudgetHistory() => new()
     {
         Id = Random.Shared.Next(1, 1_000_000_000),
-        BrancheOfficeId = 1,
+        BranchOfficeId = 1,
         Action = (Random.Shared.NextDouble() - 0.5) * 100,
         Description = Random.Shared.Next(1, 100).ToString()
     };

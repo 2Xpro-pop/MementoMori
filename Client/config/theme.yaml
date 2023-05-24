@@ -1,4 +1,5 @@
 theme:
     primary: "#1B1E1F"
+    accent: "#373740"
     textPrimaryColor: "white"
     textAccentColor: "white"

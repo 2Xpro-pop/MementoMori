@@ -13,6 +13,9 @@ public class MementoMoriServer {
 
         builder.setPort(6644);
 
+        builder.readCommands(Commands.class);
+
+        builder.useOpen(ConnectionLiverCheckerMiddleware.class);
         builder.useOpen(ConnectionIdSetter.class);
         builder.useOpen(MessageMiddlewareHandler.class);
         builder.useOpen(CommandsHandlersMiddleware.class);

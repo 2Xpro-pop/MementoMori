@@ -43,21 +43,42 @@ public partial class LoginWindow : Window
 
             connectionContext.OnCommandReceived += (cmdId, data) =>
             {
-                OnLogin?.Invoke();
-                Close();
-                var mw = App.Current.MainWindow;
-                mw.Show();
-                mw.Activate();
+                if (cmdId == 100)
+                {
+                    var json = Encoding.UTF8.GetString(data);
+                    var result = JsonSerializer.Deserialize<Receptionist>(json, new JsonSerializerOptions()
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    if (result.BranchOfficeId > 0)
+                    {
+                        var receptionist = services.GetRequiredService<Receptionist>();
+                        receptionist.BranchOfficeId = result.BranchOfficeId;
+                        receptionist.Login = result.Login;
+                        receptionist.Password = result.Password;
+                        Dispatcher.Invoke(() =>
+                        {
+                            OnLogin?.Invoke();
+                            Close();
+                            var mw = App.Current.MainWindow;
+                            mw.Show();
+                            mw.Activate();
+                        });
+                        
+                    }
+                    else
+                    {
+                        MessageBox.Show("Неверный логин или пароль");
+                    }
+
+                }
             };
 
         };
 
         OnLogin += () =>
         {
-            Close();
-            var mw = App.Current.MainWindow;
-            mw.Show();
-            mw.Activate();
+
         };
     }
 

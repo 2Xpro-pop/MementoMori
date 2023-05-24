@@ -6,14 +6,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Client.Models;
 using Client.Services.HostedService;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Client.Services;
-public class BudgetHistoryService : ModelWatcherService<BudgetHistory>
+public class PersonalService : ModelWatcherService<Personal>
 {
     private readonly Receptionist _receptionist;
-    private readonly ICommandInvoker _invoker; 
-    public BudgetHistoryService(ConnectionContext connectionContext, Receptionist receptionist, ICommandInvoker invoker): base(connectionContext)
+    private readonly ICommandInvoker _invoker;
+    public PersonalService(ConnectionContext connectionContext, Receptionist receptionist, ICommandInvoker invoker) : base(connectionContext)
     {
         _receptionist = receptionist;
         _invoker = invoker;
@@ -35,10 +34,10 @@ public class BudgetHistoryService : ModelWatcherService<BudgetHistory>
             return;
         }
 
-        if(cmdId == 13)
+        if (cmdId == 43)
         {
             var json = Encoding.UTF8.GetString(data);
-            var list = JsonSerializer.Deserialize<List<BudgetHistory>>(json, new JsonSerializerOptions
+            var list = JsonSerializer.Deserialize<List<Personal>>(json, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
@@ -48,8 +47,9 @@ public class BudgetHistoryService : ModelWatcherService<BudgetHistory>
             modelChangeHandler?.Invoke();
         }
 
-        Add(cmdId == 10, data);
-        Remove(cmdId == 11, data);
-        Update(cmdId == 12, data);
+        Add(cmdId == 40, data);
+        Remove(cmdId == 41, data);
+        Update(cmdId == 42, data);
     }
 }
+

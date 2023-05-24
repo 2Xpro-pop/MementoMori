@@ -15,7 +15,7 @@ public class ConnectionLiverChecker extends Thread {
         while (true){
             try {
                 Thread.sleep(15_000);
-                if (System.currentTimeMillis() - lastTime > 50_000){
+                if (System.currentTimeMillis() - lastTime > 1000 * 60 * 5){
                     context.close();
                     break;
                 }

@@ -45,7 +45,7 @@ public class PersonalCH implements CommandHandler {
         em.persist(personal);
         em.getTransaction().commit();
 
-        responser.notifyResponse(Commands.ADD_PERSONAL, personal);
+        responser.notifyResponse(Commands.ADD_PERSONAL, new PersonalVM(personal));
     }
 
     @Command(Commands.DELETE_PERSONAL)
@@ -56,7 +56,7 @@ public class PersonalCH implements CommandHandler {
         em.remove(personal);
         em.getTransaction().commit();
 
-        responser.notifyResponse(Commands.DELETE_PERSONAL, personal);
+        responser.notifyResponse(Commands.DELETE_PERSONAL, new PersonalVM(personal));
     }
 
     @Command(Commands.UPDATE_PERSONAL)

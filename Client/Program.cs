@@ -28,11 +28,17 @@ public class Program
 
         builder.Services.AddSingleton<App>();
         builder.Services.AddSingleton<LoginService>();
-        builder.Services.AddSingleton<BudgetHistoryService>();
         builder.Services.AddSingleton<ConnectionContext>();
         builder.Services.AddSingleton<Receptionist>();
 
+        builder.Services.AddScoped<Radzen.DialogService>();
+        builder.Services.AddScoped<MudBlazor.DialogService>();
+
         builder.Services.AddTransient<ICommandInvoker, BinaryCommandInvoker>();
+        builder.Services.AddTransient<BudgetHistoryService>();
+        builder.Services.AddTransient<PersonalService>();
+        builder.Services.AddTransient<PatientService>();
+        builder.Services.AddTransient<ScheduleService>();
 
         builder.Services.AddBlazorWebView();
         builder.Services.AddWpfBlazorWebView();

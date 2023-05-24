@@ -10,7 +10,8 @@ import org.bayasik.erik.models.BranchOffice;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-public class BranchOfficesCH implements CommandHandler {
+public class
+BranchOfficesCH implements CommandHandler {
 
     private EntityManager entityManager;
     private ConnectionContext context;
@@ -34,6 +35,8 @@ public class BranchOfficesCH implements CommandHandler {
         em.persist(office);
         em.getTransaction().commit();
 
+        em.flush();
+
         responser.notifyResponse(Commands.ADD_BRANCH_OFFICE, office);
     }
 
@@ -45,6 +48,8 @@ public class BranchOfficesCH implements CommandHandler {
         System.out.println("DeleteBranchSucc");
         em.remove(office);
         em.getTransaction().commit();
+
+        em.flush();
 
         responser.notifyResponse(Commands.DELETE_BRANCH_OFFICE, office);
     }
@@ -61,6 +66,8 @@ public class BranchOfficesCH implements CommandHandler {
         em.merge(office);
         em.getTransaction().commit();
 
+        em.flush();
+
         responser.notifyResponse(Commands.UPDATE_BRANCH_OFFICE, office);
     }
 
@@ -70,6 +77,9 @@ public class BranchOfficesCH implements CommandHandler {
         var offices = em.createQuery("SELECT o FROM BranchOffice o", BranchOffice.class).getResultList();
         System.out.println("GetAllOfficesSucc");
         System.out.println(offices);
+
+        em.flush();
+
         responser.notifyResponse(Commands.GET_ALL_OFFICES, offices);
     }
 
@@ -79,6 +89,9 @@ public class BranchOfficesCH implements CommandHandler {
         var offices = em.createQuery("SELECT o FROM BranchOffice o WHERE o.id = :branchOfficeId", BranchOffice.class).setParameter("branchOfficeId", id).getResultList();
         System.out.println("succ");
         System.out.println(offices);
+
+        em.flush();
+
         responser.notifyResponse(Commands.GET_OFFICE_BY_ID, offices);
     }
 }

@@ -12,6 +12,11 @@ public class Theme
         get; set;
     } = "blue";
 
+    public string Accent
+    {
+        get; set;
+    } = "blue";
+
     public string TextPrimaryColor
     {
         get; set;

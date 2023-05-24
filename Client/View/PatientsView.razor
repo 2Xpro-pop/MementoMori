@@ -1,0 +1,52 @@
+﻿@page "/patients"
+
+@inject IOptionsMonitor<Theme> ThemeOptions
+@inject PatientService PatientService;
+@inject ConnectionContext ConnectionContext;
+@inject Receptionist Receptionist
+@inject ICommandInvoker CommandInvoker
+
+
+<div class="overflow death-angel"></div>
+
+<h1>Пациенты</h1>
+
+<div class="p-3" style="width: 60%;">
+    <MudTable Items=@patients>
+        <HeaderContent>
+            <MudTh>ФИО</MudTh>
+            <MudTh>Адресс</MudTh>
+            <MudTh>Номер телефона</MudTh>
+            <MudTh>Электронная почта</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.FullName</MudTd>
+            <MudTd>@context.Address</MudTd>
+            <MudTd>@context.PhoneNumber</MudTd>
+            <MudTd>@context.Email</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager HideRowsPerPage=true HorizontalAlignment="HorizontalAlignment.Left" />
+        </PagerContent>
+    </MudTable>
+</div>
+
+@code {
+    private List<Patient> patients;
+    private Theme theme = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        theme = ThemeOptions.CurrentValue;
+        PatientService.OnModelsChanged += async () =>
+        {
+            await this.InvokeAsync(() =>
+            {
+                patients = PatientService.Models;
+                this.StateHasChanged();
+            });
+        };
+        PatientService.ListenBranchOffice(1);
+        CommandInvoker.InvokeCommand(33);
+    }
+}

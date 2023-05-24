@@ -26,11 +26,16 @@ public class MessageThread extends Thread {
     @Override
     public void run() {
         var socket = connectionContext.get(Socket.class);
+
         var middlewareOfGettingMessage = new InjectableChainOfResponsibility(
                 chainOfGettingMessage.toArray(new ChainOfResponsibilityDescriptor[0])
         );
 
+        var connectionLiverChecker = connectionContext.get(ConnectionLiverChecker.class);
+
         try {
+            socket.setKeepAlive(true);
+            socket.setSoTimeout(0);
             var inputStream = socket.getInputStream();
 
             while (!socket.isClosed()) {
@@ -38,6 +43,8 @@ public class MessageThread extends Thread {
                 if(inputStream.available() == 0) {
                     continue;
                 }
+
+                connectionLiverChecker.updateLastTime();
 
                 var injector = connectionContext.get(Injector.class).createChildInjector(binder -> {
                     binder.bindScope(PerMessage.class, new SingletonScope());
@@ -51,9 +58,9 @@ public class MessageThread extends Thread {
                 {
                     var messageContext = injector.getInstance(MessageContext.class);
                     messageContext.setLastMessage(bytes);
-
+                    connectionLiverChecker.updateLastTime();
                     middlewareOfGettingMessage.accept(connectionContext);
-
+                    connectionLiverChecker.updateLastTime();
                 }
 
 
